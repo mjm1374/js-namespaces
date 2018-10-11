@@ -8,11 +8,31 @@ var cssnano = require('gulp-cssnano');
 var imagemin = require('gulp-imagemin');
 var del = require('del');
 var runSequence = require('run-sequence');
+var jshint = require('gulp-jshint');
+
+var input  = {
+        'sass': 'sass/**/*.scss',
+        'javascript': ['js/**/lv-*.js', 'js/**/ui-*.js'],
+        'vendor': 'vendor/**/*.js',
+        'old': ['css/all.css', 'css/omnica.css', 'css/adaptive-adaptations.css']
+    },
+  output = {
+        'stylesheets': 'stylesheets',
+        'javascript': 'javascript'
+    };
+
 
 gulp.task('default', function (callback) {
   runSequence(['sass','browserSync', 'watch'],
     callback
   );
+});
+
+
+gulp.task('jshint', function() {
+    return gulp.src(input.javascript)
+        .pipe(jshint())
+        .pipe(jshint.reporter('jshint-stylish'));
 });
 
 gulp.task('build', function (callback) {
@@ -34,7 +54,8 @@ gulp.task('sass', function(){
 
 gulp.task('watch', ['browserSync'], function (){
   gulp.watch('app/scss/**/*.scss', ['sass']);
-  gulp.watch('app/js/**/*.js', browserSync.reload); 
+  gulp.watch('app/js/**/*.js', browserSync.reload);
+  
   // Other watchers
 });
 
